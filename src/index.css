@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-canvas: #FFFAFB;
+  --bg-card: #FFFFFF;
+  --pink-bold: #FF3D8A;
+  --pink-deep: #C2185B;
+  --pink-soft: #FFE4EC;
+  --pink-soft-dark: #FFB8D1;
+  --pink-rose: #B85878;
+  --yellow-bold: #FFD93D;
+  --yellow-warm: #B8860B;
+  --yellow-soft: #FFF8DC;
+  --yellow-border: #FFE4A3;
+  --text-body: #6B4456;
+}
+
+html, body {
+  background: var(--bg-canvas);
+  color: var(--text-body);
+}
+
+.font-glam {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.gradient-hairline {
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #FF3D8A 0%, #FACC15 25%, #10B981 50%, #06B6D4 75%, #FF3D8A 100%);
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.modal-scroll {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE / old Edge */
+}
+.modal-scroll::-webkit-scrollbar {
+  display: none;                /* Chrome, Safari, Edge */
+}
