@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, X, Check, ExternalLink, Server, Cpu, Zap, Activity, Pause, Wrench, Archive, Search, RotateCcw, Folder, Github, GitBranch, Lightbulb } from 'lucide-react';
 
-const STORAGE_KEY = 'agent-inventory-v12';
+const STORAGE_KEY = 'agent-inventory';
 
 const STATUS_CONFIG = {
   live: {
@@ -63,10 +63,21 @@ const SEED_AGENTS = [
   { id: '19', name: "Refrakt", description: "Takes one post you've already written, has Claude reformat it natively for each social platform, then schedules and publishes it.", status: "live", category: "Content Automation", techStack: ["Node.js (zero dependencies, raw http)", "Vanilla JS single-page UI", "JSON files as datastore"], apis: ["Anthropic API (claude-haiku-4-5)", "Bluesky AT Protocol", "Pinterest v5 API", "Mastodon (disabled)"], hosting: "Local (node server.js)", url: "http://localhost:3000", repoUrl: "", deployMethod: "Manual (node server.js)", folder: "D:/refrakt/refrakt-local", notes: "Actively publishing to Bluesky and Pinterest for @celestialdestiny. Threads shows live in the UI but has no server-side publish path; Instagram is copy-by-hand; LinkedIn/TikTok/YouTube are placeholders. Mastodon was pulled 2026-08-06 after that account was suspended. The 'Safe-Publish' throttle layer is the anti-flag logic and the most fragile piece. NO GIT REPO — a live publishing system with zero backup." },
   { id: '20', name: "Billing Fixer", description: "Reads a behavioral-health practice's denied insurance claims, classifies why each was denied, and proposes the exact correction or appeal to recover the money.", status: "development", category: "Healthcare RCM", techStack: ["Python 3 (stdlib-only harness)", "JSONL dataset + CSV run history", "static HTML/JS dashboards"], apis: ["Anthropic Claude API", "Groq (llama-3.3-70b)", "Google Gemini (2.5 Flash)"], hosting: "Local", url: "", repoUrl: "", deployMethod: "Manual (run_eval.py from CLI)", folder: "D:/Billing-fixer", notes: "The eval harness is the mature part: 21 synthetic no-PHI denial cases, confusion matrix, per-bucket P/R/F1, disciplined journal. Best real score 90.5% on Groq under prompt v1 — but the taxonomy was then split 6→7 buckets (v2), which invalidates that baseline. Outstanding next step: the v2 re-baseline. No git repo, so the eval history has no backup. Real claims would need a signed BAA with the model vendor." },
   { id: '21', name: "InterviewApp", description: "Listens during an interview or live member call and instantly puts the right answer card on screen with keywords and a 20-second spoken script.", status: "development", category: "Personal Productivity", techStack: ["Vanilla JS (ES modules)", "Node build scripts", "Web Speech API", "transformers.js (MiniLM embeddings)"], apis: ["Anthropic Messages API (optional)", "Chrome/Edge speech recognition"], hosting: "Local", url: "", repoUrl: "", deployMethod: "Manual (node build.mjs, run from start-here.bat)", folder: "D:/interview-app", notes: "Two decks share one matcher. The WTCHP call deck is strong — 93% first-place, 100% top-3 on 41 unseen questions. The AI-engineering interview deck is weak — 41% first-place, 74% top-3, because the vocabulary isn't distinctive enough. cue.html and wtc.html are GENERATED; edit src/ and rebuild or your changes get overwritten. No git repo." },
-  { id: '22', name: "RunOffline", description: "Offline single-file web app for dog groomers — tracks clients, pets, vaccination expiry, and rebooking. Selling on Etsy as a no-subscription download ($49 list, 40% off through Sep 19).", status: "live", category: "Digital Products / Ecommerce", techStack: ["Single-file HTML + vanilla CSS/JS", "localStorage", "light/dark theming"], apis: [], hosting: "Etsy (digital download); product itself runs fully offline in the buyer's browser", url: "https://runoffline.etsy.com", repoUrl: "", deployMethod: "Etsy digital listing — auto-delivers the ZIP on payment", folder: "D:/etsy", notes: "SHOP IS LIVE at runoffline.etsy.com — 1 active listing, 'Pet Grooming Client Manager', $49 list, 999 in stock, auto-renews Dec 19 2026. A 40% shop-wide sale runs Aug 20 – Sep 19 2026, so buyers pay ~$29.40 right now (close to the $29 the planning docs assumed). Sale ends Sep 19 — decide before then whether $49 or ~$29 is the real price. Fully built: app, 320KB delivery ZIP, START-HERE.pdf, licence, 15 listing images, demo video, full brand set. Two open items from the build: LICENCE.txt still needs the real shop URL inserted then re-zipped, and no real groomer has click-tested it yet — every design decision came from forum posts and competitor teardowns. Research-led (niche scan + demand findings drove the feature set). No git repo — this folder is the only copy of a product that's now selling. NOTE: etsy-setup-checklist.md in the folder is stale/unchecked; ignore it." },
+  { id: '22', name: "Etsy-RunOffline", description: "Offline single-file web app for dog groomers — tracks clients, pets, vaccination expiry, and rebooking. Selling on Etsy as a no-subscription download ($49 list, 40% off through Sep 19).", status: "live", category: "Digital Products / Ecommerce", techStack: ["Single-file HTML + vanilla CSS/JS", "localStorage", "light/dark theming"], apis: [], hosting: "Etsy (digital download); product itself runs fully offline in the buyer's browser", url: "https://runoffline.etsy.com", repoUrl: "", deployMethod: "Etsy digital listing — auto-delivers the ZIP on payment", folder: "D:/etsy/dog-grooming", notes: "SHOP IS LIVE at runoffline.etsy.com — 1 active listing, 'Pet Grooming Client Manager', $49 list, 999 in stock, auto-renews Dec 19 2026. A 40% shop-wide sale runs Aug 20 – Sep 19 2026, so buyers pay ~$29.40 right now (close to the $29 the planning docs assumed). Sale ends Sep 19 — decide before then whether $49 or ~$29 is the real price. Fully built: app, 320KB delivery ZIP, START-HERE.pdf, licence, 15 listing images, demo video, full brand set. Two open items from the build: LICENCE.txt still needs the real shop URL inserted then re-zipped, and no real groomer has click-tested it yet — every design decision came from forum posts and competitor teardowns. Research-led (niche scan + demand findings drove the feature set). Local git repo since 2026-08-24 (71 files, no remote — deliberately not on GitHub); the 2FA codes live one level up in D:/etsy, outside the repo. STILL NEEDS AN OFF-DISK BACKUP: a local repo dies with the drive, and this is the only copy of a product that's selling. NOTE: etsy-setup-checklist.md in the folder is stale/unchecked; ignore it." },
   { id: '23', name: "Celestial Destiny Agent OS", description: "Packaged Cowork agent that acts as the marketing team for destinyrealm.com — drafts on-brand Pinterest/Instagram pin images and matching captions for approval before posting.", status: "live", category: "Content Automation / Marketing Agent", techStack: ["Claude Code / Cowork agent skill (CLAUDE.md + .claude/skills)", "Markdown context files", "Python 3 + Pillow"], apis: ["Higgsfield MCP (suggested, not wired)", "Metricool / Meta Business Suite (suggested, not wired)"], hosting: "Local", url: "https://destinyrealm.com", repoUrl: "", deployMethod: "Manual (install folder into Cowork, run the celestial-pins skill)", folder: "D:/celestial-agents/Celestial-Destiny-OS", notes: "In daily use on destinyrealm.com. A real packaged agent, not a script: CLAUDE.md as northstar, /context for brand facts, a self-updating memory.md, and generate_pins.py rendering 1000×1500 pins from the actual card art. Golden rule is baked in — the agent drafts and queues, I approve, nothing goes live unattended. Output is produced in the Cowork session and published through Refrakt, so the folder's file dates never move — do not read them as inactivity. Two context files (offer-catalog.md, card-system.md) are still stubs." },
   { id: '24', name: "WTCHP Reference Library", description: "Curated, source-dated notes and official PDFs on World Trade Center Health Program coverage rules, so answers given on live member calls trace back to a real document.", status: "live", category: "Knowledge Base", techStack: ["Markdown notes", "PDF source documents"], apis: ["cdc.gov/wtc (checked manually)"], hosting: "Local", url: "", repoUrl: "", deployMethod: "", folder: "D:/WTC-ADMIN", notes: "Not software — a maintained knowledge base, and the upstream source for the WTC deck in Cue Cards. _SOURCE_CURRENCY_AUDIT.md is the control doc: it flags stale citations and logged one real policy change (2025 handbook moved travel reimbursement to over 250 ROUND-TRIP miles). Tracker follows the NPN→NPA transition to Sedgwick (~Jan 2027), the July 2026 Generic First pharmacy rule, and a June 2026 telehealth claims bug. Three non-public docs are still missing and block definitive answers: the Codebook (Vols A & B), the Pharmacy Formulary, and the NTI drug list. Currency check is manual with no reminder." },
 ];
+
+// Fingerprint of the seed data above. Whenever SEED_AGENTS changes in this
+// file, this value changes too — and the app reloads from the seed instead of
+// serving a stale copy out of localStorage. The code is the source of truth;
+// no more bumping a version key by hand every time a status is corrected.
+const SEED_FINGERPRINT = (() => {
+  const s = JSON.stringify(SEED_AGENTS);
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
+  return h.toString(36);
+})();
 
 const emptyAgent = () => ({
   id: '',
@@ -96,24 +107,33 @@ export default function AgentInventory() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
+    const loadSeed = () => {
+      setAgents(SEED_AGENTS);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ fingerprint: SEED_FINGERPRINT, agents: SEED_AGENTS }));
+      } catch {}
+    };
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        setAgents(JSON.parse(raw));
+      if (!raw) {
+        loadSeed();
       } else {
-        setAgents(SEED_AGENTS);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_AGENTS));
+        const saved = JSON.parse(raw);
+        if (saved && saved.fingerprint === SEED_FINGERPRINT && Array.isArray(saved.agents)) {
+          setAgents(saved.agents);
+        } else {
+          loadSeed();
+        }
       }
     } catch {
-      setAgents(SEED_AGENTS);
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_AGENTS)); } catch {}
+      loadSeed();
     }
     setLoading(false);
   }, []);
 
   const persist = (next) => {
     setAgents(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) { console.error(e); }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ fingerprint: SEED_FINGERPRINT, agents: next })); } catch (e) { console.error(e); }
   };
 
   const startNew = () => {
